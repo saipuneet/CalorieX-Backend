@@ -31,11 +31,13 @@ public class User {
 
     private Integer dailyCalories;
 
+    private String activityLevel;
+
     public User(){
 
     }
 
-    public User(Long id, String name, String email, String password, Integer age, Double height, Double weight, String gender, String goal, Integer dailyCalories) {
+    public User(Long id, String name, String email, String password, Integer age, Double height, Double weight, String gender, String goal, Integer dailyCalories, String activityLevel) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -46,6 +48,7 @@ public class User {
         this.gender = gender;
         this.goal = goal;
         this.dailyCalories = dailyCalories;
+        this.activityLevel = activityLevel;
     }
 
 
@@ -127,5 +130,13 @@ public class User {
 
     public void setDailyCalories(Integer dailyCalories) {
         this.dailyCalories = dailyCalories;
+    }
+
+    public String getActivityLevel() {
+        return activityLevel;
+    }
+
+    public void setActivityLevel(String activityLevel) {
+        this.activityLevel = activityLevel;
     }
 }

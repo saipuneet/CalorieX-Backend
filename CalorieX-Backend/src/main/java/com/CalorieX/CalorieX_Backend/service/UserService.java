@@ -3,11 +3,13 @@ package com.CalorieX.CalorieX_Backend.service;
 import com.CalorieX.CalorieX_Backend.dto.AuthResponse;
 import com.CalorieX.CalorieX_Backend.dto.LoginRequest;
 import com.CalorieX.CalorieX_Backend.dto.RegisterRequest;
+import com.CalorieX.CalorieX_Backend.dto.UpdateProfileRequest;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
 import com.CalorieX.CalorieX_Backend.security.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -88,7 +90,25 @@ public class UserService {
 
         return new AuthResponse(token);
 
+    }
 
+    public String updateProfile(UpdateProfileRequest updateProfileRequest){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not Found"));
+
+        user.setAge(updateProfileRequest.getAge());
+
+        user.setHeight(updateProfileRequest.getHeight());
+
+        user.setWeight(updateProfileRequest.getWeight());
+
+        user.setGoal(updateProfileRequest.getGoal());
+
+        user.setActivityLevel(updateProfileRequest.getActivityLevel());
+
+        userRepository.save(user);
+
+        return "Profile Updated Sucessfully";
     }
 }
