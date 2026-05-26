@@ -1,9 +1,6 @@
 package com.CalorieX.CalorieX_Backend.service;
 
-import com.CalorieX.CalorieX_Backend.dto.AuthResponse;
-import com.CalorieX.CalorieX_Backend.dto.LoginRequest;
-import com.CalorieX.CalorieX_Backend.dto.RegisterRequest;
-import com.CalorieX.CalorieX_Backend.dto.UpdateProfileRequest;
+import com.CalorieX.CalorieX_Backend.dto.*;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
 import com.CalorieX.CalorieX_Backend.security.JwtService;
@@ -110,5 +107,35 @@ public class UserService {
         userRepository.save(user);
 
         return "Profile Updated Sucessfully";
+    }
+
+    public ProfileResponse getProfile(){
+
+        //Get authenticated user email from JWT
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //Find the user from the database
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        //create response DTO
+        ProfileResponse profileResponse = new ProfileResponse();
+
+        //setData into DTO
+
+        profileResponse.setName(user.getName());
+        profileResponse.setEmail(user.getEmail());
+        profileResponse.setAge(user.getAge());
+        profileResponse.setHeight(user.getHeight());
+
+        profileResponse.setWeight(user.getWeight());
+
+        profileResponse.setGoal(user.getGoal());
+
+        profileResponse.setActivityLevel(
+                user.getActivityLevel()
+        );
+
+        // Return response
+        return profileResponse;
     }
 }
