@@ -1,0 +1,94 @@
+package com.CalorieX.CalorieX_Backend.service;
+
+import com.CalorieX.CalorieX_Backend.dto.AuthResponse;
+import com.CalorieX.CalorieX_Backend.dto.LoginRequest;
+import com.CalorieX.CalorieX_Backend.dto.RegisterRequest;
+import com.CalorieX.CalorieX_Backend.entity.User;
+import com.CalorieX.CalorieX_Backend.repository.UserRepository;
+import com.CalorieX.CalorieX_Backend.security.JwtService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    private final JwtService jwtService;
+
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtService jwtService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+    }
+
+    public User saveUser(User user){
+        return userRepository.save(user);
+    }
+
+
+    public User register(@Valid RegisterRequest registerRequest) {
+
+        //check email alread exists
+        if(userRepository.existsByEmail(registerRequest.getEmail())){
+            throw new RuntimeException("Email already exists");
+        }
+
+        //Convert DTO -> Entity
+        User user = new User();
+        user.setName(registerRequest.getName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPassword(
+                passwordEncoder.encode(registerRequest.getPassword())
+        );
+        user.setAge(registerRequest.getAge());
+        user.setHeight(registerRequest.getHeight());
+        user.setWeight(registerRequest.getWeight());
+        user.setGender(registerRequest.getGender());
+        user.setGoal(registerRequest.getGoal());
+
+        return userRepository.save(user);
+    }
+
+    public AuthResponse login(@Valid LoginRequest loginRequest) {
+
+
+        // Check if the email is exist or not
+        Optional<User> optionalUser = userRepository.findByEmail(loginRequest.getEmail());
+
+        // if email is not exist
+        if(optionalUser.isEmpty()){
+            throw new RuntimeException("Email is not found");
+        }
+
+        //Get actual user object
+        User user = optionalUser.get();
+
+
+        //Verify the password
+        boolean passwordMatches = passwordEncoder.matches(
+                loginRequest.getPassword(),
+                user.getPassword());
+
+        // if password is not match
+        if(!passwordMatches){
+            throw new RuntimeException("Password is incorrect");
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new AuthResponse(token);
+
+
+
+    }
+}
