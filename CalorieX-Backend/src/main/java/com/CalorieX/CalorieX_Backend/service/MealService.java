@@ -1,6 +1,7 @@
 package com.CalorieX.CalorieX_Backend.service;
 
 import com.CalorieX.CalorieX_Backend.dto.AddMealRequest;
+import com.CalorieX.CalorieX_Backend.dto.MealResponse;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
@@ -9,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MealService {
@@ -60,6 +63,65 @@ public class MealService {
         mealRepository.save(meal);
 
         return "Meal Added Successfully";
+
+    }
+
+    public List<MealResponse> getMeals(){
+
+
+        // getting the authentication user email
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        //Find the user from database
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(()-> new RuntimeException("User not found"));
+
+        //Fetch all the meals belong the user
+        List<Meal> meals = mealRepository.findByUser(user);
+
+        //Create a MealResponse List
+        List<MealResponse> mealResponses = new ArrayList<>();
+
+        //Convert the meals to mealResponse
+
+        for(Meal meal : meals){
+            MealResponse mealResponse = new MealResponse();
+
+            mealResponse.setId(meal.getId());
+            mealResponse.setMealName(meal.getMealName());
+            mealResponse.setCalories(meal.getCalories());
+            mealResponse.setProtein(meal.getProtein());
+            mealResponse.setFats(meal.getFats());
+            mealResponse.setCarbs(meal.getCarbs());
+            mealResponse.setMealType(meal.getMealType());
+            mealResponse.setDate(meal.getDate());
+            mealResponses.add(mealResponse);
+        }
+
+           return mealResponses;
+    }
+
+    public String deleteMeal(Long mealId){
+
+        // Getting the authenticated email
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //Find the user
+
+        User user = userRepository.findByEmail(email).orElseThrow(() ->  new RuntimeException("User not found"));
+
+        //Find the meal with ownership Validation
+
+        Meal meal = mealRepository.findByIdAndUser(mealId,user).orElseThrow(() -> new RuntimeException("Meal not found"));
+
+        mealRepository.delete(meal);
+
+        return "Meal Deleted Successfully";
+
 
     }
 }
