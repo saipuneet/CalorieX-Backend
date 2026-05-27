@@ -3,6 +3,7 @@ package com.CalorieX.CalorieX_Backend.service;
 import com.CalorieX.CalorieX_Backend.dto.AddMealRequest;
 import com.CalorieX.CalorieX_Backend.dto.MealResponse;
 import com.CalorieX.CalorieX_Backend.dto.NutritionSummaryResoponse;
+import com.CalorieX.CalorieX_Backend.dto.UpdateMealRequest;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MealService {
@@ -160,6 +162,27 @@ public class MealService {
         nutritionSummaryResoponse.setTotalFats(totalFats);
 
         return nutritionSummaryResoponse;
+    }
+
+    public String updateMeal(Long mealId, UpdateMealRequest updateMealRequest){
+        //get authenticated email
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+        Meal meal = mealRepository.findByIdAndUser(mealId,user).orElseThrow(() -> new RuntimeException("Meal not found"));
+
+        meal.setMealName(updateMealRequest.getMealName());
+        meal.setCalories(updateMealRequest.getCalories());
+        meal.setProtein(updateMealRequest.getProtein());
+        meal.setFats(updateMealRequest.getFats());
+        meal.setCarbs(updateMealRequest.getCarbs());
+        meal.setMealType(updateMealRequest.getMealType());
+
+        mealRepository.save(meal);
+
+        return "Meals update successfully";
 
     }
 }
