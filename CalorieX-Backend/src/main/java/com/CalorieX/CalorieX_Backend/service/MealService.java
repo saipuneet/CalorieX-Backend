@@ -2,6 +2,7 @@ package com.CalorieX.CalorieX_Backend.service;
 
 import com.CalorieX.CalorieX_Backend.dto.AddMealRequest;
 import com.CalorieX.CalorieX_Backend.dto.MealResponse;
+import com.CalorieX.CalorieX_Backend.dto.NutritionSummaryResoponse;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
@@ -121,7 +122,44 @@ public class MealService {
         mealRepository.delete(meal);
 
         return "Meal Deleted Successfully";
+    }
 
+    public NutritionSummaryResoponse getDailyNutritionSummary(){
+
+        // Get Authentication email
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+
+        //Get in the authenticated user
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not Found"));
+
+        //Fetch the meal
+
+        List<Meal> meals = mealRepository.findByUser(user);
+
+        int totalCalories =0;
+
+        double totalProtein =0;
+
+        double totalCarbs = 0;
+
+        double totalFats = 0;
+
+        for(Meal meal : meals){
+            totalCalories = totalCalories + meal.getCalories();
+            totalProtein = totalProtein + meal.getProtein();
+            totalFats = totalFats + meal.getFats();
+            totalCarbs = totalCarbs + meal.getCarbs();
+        }
+
+        NutritionSummaryResoponse nutritionSummaryResoponse = new NutritionSummaryResoponse();
+
+        nutritionSummaryResoponse.setTotalCalories(totalCalories);
+        nutritionSummaryResoponse.setTotalProtein(totalProtein);
+        nutritionSummaryResoponse.setTotalCarbs(totalCarbs);
+        nutritionSummaryResoponse.setTotalFats(totalFats);
+
+        return nutritionSummaryResoponse;
 
     }
 }

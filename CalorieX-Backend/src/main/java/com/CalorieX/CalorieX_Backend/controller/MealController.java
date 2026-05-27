@@ -3,6 +3,7 @@ package com.CalorieX.CalorieX_Backend.controller;
 
 import com.CalorieX.CalorieX_Backend.dto.AddMealRequest;
 import com.CalorieX.CalorieX_Backend.dto.MealResponse;
+import com.CalorieX.CalorieX_Backend.dto.NutritionSummaryResoponse;
 import com.CalorieX.CalorieX_Backend.service.MealService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,11 @@ public class MealController {
     @DeleteMapping("/{mealId}")
     public String deleteMeal(@PathVariable Long mealId){
         return mealService.deleteMeal(mealId);
+    }
+
+    @GetMapping("/summary")
+    public NutritionSummaryResoponse getDailyNutritionSummary(){
+        return mealService.getDailyNutritionSummary();
     }
 
 
