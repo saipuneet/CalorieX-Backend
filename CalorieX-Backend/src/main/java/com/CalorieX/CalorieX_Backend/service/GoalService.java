@@ -1,14 +1,18 @@
 package com.CalorieX.CalorieX_Backend.service;
 
+import com.CalorieX.CalorieX_Backend.dto.GoalProgressResponse;
 import com.CalorieX.CalorieX_Backend.dto.GoalResponse;
 import com.CalorieX.CalorieX_Backend.dto.SetGoalsRequest;
 import com.CalorieX.CalorieX_Backend.entity.Goal;
+import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.repository.GoalRepository;
+import com.CalorieX.CalorieX_Backend.repository.MealRepository;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,11 +23,13 @@ public class GoalService {
     private final GoalRepository goalRepository;
 
     private final UserRepository userRepository;
+    private  final MealRepository mealRepository;
 
 
-    public GoalService(GoalRepository goalRepository, UserRepository userRepository) {
+    public GoalService(GoalRepository goalRepository, UserRepository userRepository, MealRepository mealRepository) {
         this.goalRepository = goalRepository;
         this.userRepository = userRepository;
+        this.mealRepository = mealRepository;
     }
 
     public String setGoal(SetGoalsRequest setGoalsRequest){
@@ -76,6 +82,7 @@ public class GoalService {
         Goal goal = goalRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Goal not found"));
 
+        //Create the goalResponse object to store the data from goal it is like conversion of goal to goalResponse DTO
         GoalResponse goalResponse = new GoalResponse();
 
         goalResponse.setTargetCalories(goal.getTargetCalories());
@@ -84,6 +91,40 @@ public class GoalService {
         goalResponse.setTargetFats(goal.getTargetFats());
 
         return goalResponse;
+
+    }
+
+    public GoalProgressResponse getGoalProgress(){
+
+        // get authenticated user
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        // getting the user data from user Database table
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        // Fetch the user goal
+        Goal goal = goalRepository.findByUser(user).orElseThrow(()-> new RuntimeException("Goal not Found"));
+        //Fetching the user meal
+        List<Meal> meals = mealRepository.findByUser(user);
+
+        int consumedCalories = 0 ;
+
+        for(Meal meal : meals){
+            consumedCalories = consumedCalories + meal.getCalories();
+        }
+        int remainingCalories = goal.getTargetCalories() - consumedCalories;
+
+        double progressPercentage =
+                ((double) consumedCalories
+                        / goal.getTargetCalories())
+                        * 100;
+
+        GoalProgressResponse goalProgressResponse = new GoalProgressResponse();
+
+        goalProgressResponse.setTargetCalories(goal.getTargetCalories());
+        goalProgressResponse.setConsumedCalories(consumedCalories);
+        goalProgressResponse.setRemainingCalories(remainingCalories);
+        goalProgressResponse.setProgressPercentage(progressPercentage);
+
+        return goalProgressResponse;
 
     }
 

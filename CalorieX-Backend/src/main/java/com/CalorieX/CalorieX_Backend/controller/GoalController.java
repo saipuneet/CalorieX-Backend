@@ -1,6 +1,7 @@
 package com.CalorieX.CalorieX_Backend.controller;
 
 
+import com.CalorieX.CalorieX_Backend.dto.GoalProgressResponse;
 import com.CalorieX.CalorieX_Backend.dto.GoalResponse;
 import com.CalorieX.CalorieX_Backend.dto.SetGoalsRequest;
 import com.CalorieX.CalorieX_Backend.service.GoalService;
@@ -26,5 +27,10 @@ public class GoalController {
     @GetMapping("/getGoal")
     public GoalResponse getGoal(){
         return goalService.getGoal();
+    }
+
+    @GetMapping("/progress")
+    public GoalProgressResponse getGoalProgress(){
+        return goalService.getGoalProgress();
     }
 }
