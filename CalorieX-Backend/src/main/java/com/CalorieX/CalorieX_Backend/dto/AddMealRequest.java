@@ -1,17 +1,31 @@
 package com.CalorieX.CalorieX_Backend.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class AddMealRequest {
 
+    @NotBlank
     private String mealName;
 
+    @NotNull
+    @Min(0)
     private Integer calories;
 
+    @NotNull
+    @Min(0)
     private Double protein;
 
+    @NotNull
+    @Min(0)
     private Double carbs;
 
+    @NotNull
+    @Min(0)
     private Double fats;
 
+    @NotBlank
     private String mealType;
 
     public AddMealRequest(String mealName, Integer calories, Double protein, Double carbs, Double fats, String mealType) {

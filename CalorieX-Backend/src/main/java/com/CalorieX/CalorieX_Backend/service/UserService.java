@@ -2,6 +2,10 @@ package com.CalorieX.CalorieX_Backend.service;
 
 import com.CalorieX.CalorieX_Backend.dto.*;
 import com.CalorieX.CalorieX_Backend.entity.User;
+import com.CalorieX.CalorieX_Backend.exception.EmailAlreadyExistsException;
+import com.CalorieX.CalorieX_Backend.exception.EmailIsFoundException;
+import com.CalorieX.CalorieX_Backend.exception.PasswordIsIncorrectException;
+import com.CalorieX.CalorieX_Backend.exception.UserNotFoundException;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
 import com.CalorieX.CalorieX_Backend.security.JwtService;
 import jakarta.validation.Valid;
@@ -39,7 +43,7 @@ public class UserService {
 
         //check email alread exists
         if(userRepository.existsByEmail(registerRequest.getEmail())){
-            throw new RuntimeException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
         //Convert DTO -> Entity
@@ -66,7 +70,7 @@ public class UserService {
 
         // if email is not exist
         if(optionalUser.isEmpty()){
-            throw new RuntimeException("Email is not found");
+            throw new EmailIsFoundException("Email is not found");
         }
 
         //Get actual user object
@@ -80,7 +84,7 @@ public class UserService {
 
         // if password is not match
         if(!passwordMatches){
-            throw new RuntimeException("Password is incorrect");
+            throw new PasswordIsIncorrectException("Password is incorrect");
         }
 
         String token = jwtService.generateToken(user.getEmail());
@@ -92,7 +96,7 @@ public class UserService {
     public String updateProfile(UpdateProfileRequest updateProfileRequest){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not Found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not Found"));
 
         user.setAge(updateProfileRequest.getAge());
 
@@ -115,7 +119,7 @@ public class UserService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         //Find the user from the database
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         //create response DTO
         ProfileResponse profileResponse = new ProfileResponse();

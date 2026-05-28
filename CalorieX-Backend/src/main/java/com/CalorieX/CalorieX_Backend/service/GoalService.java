@@ -6,6 +6,8 @@ import com.CalorieX.CalorieX_Backend.dto.SetGoalsRequest;
 import com.CalorieX.CalorieX_Backend.entity.Goal;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
+import com.CalorieX.CalorieX_Backend.exception.GoalNotFoundException;
+import com.CalorieX.CalorieX_Backend.exception.UserNotFoundException;
 import com.CalorieX.CalorieX_Backend.repository.GoalRepository;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
@@ -76,11 +78,11 @@ public class GoalService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         // getting the user data from User database by using the method called findbyuser
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
 
         // finding the goal of the particular user using the method Findbyuser
         Goal goal = goalRepository.findByUser(user)
-                .orElseThrow(() -> new RuntimeException("Goal not found"));
+                .orElseThrow(() -> new GoalNotFoundException("Goal not found"));
 
         //Create the goalResponse object to store the data from goal it is like conversion of goal to goalResponse DTO
         GoalResponse goalResponse = new GoalResponse();
@@ -99,9 +101,9 @@ public class GoalService {
         // get authenticated user
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         // getting the user data from user Database table
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
         // Fetch the user goal
-        Goal goal = goalRepository.findByUser(user).orElseThrow(()-> new RuntimeException("Goal not Found"));
+        Goal goal = goalRepository.findByUser(user).orElseThrow(()-> new GoalNotFoundException("Goal not Found"));
         //Fetching the user meal
         List<Meal> meals = mealRepository.findByUser(user);
 

@@ -6,6 +6,7 @@ import com.CalorieX.CalorieX_Backend.dto.NutritionSummaryResoponse;
 import com.CalorieX.CalorieX_Backend.dto.UpdateMealRequest;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
+import com.CalorieX.CalorieX_Backend.exception.MealNotFoundException;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -119,7 +120,7 @@ public class MealService {
 
         //Find the meal with ownership Validation
 
-        Meal meal = mealRepository.findByIdAndUser(mealId,user).orElseThrow(() -> new RuntimeException("Meal not found"));
+        Meal meal = mealRepository.findByIdAndUser(mealId,user).orElseThrow(() -> new MealNotFoundException("Meal not found"));
 
         mealRepository.delete(meal);
 
@@ -171,7 +172,7 @@ public class MealService {
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
-        Meal meal = mealRepository.findByIdAndUser(mealId,user).orElseThrow(() -> new RuntimeException("Meal not found"));
+        Meal meal = mealRepository.findByIdAndUser(mealId,user).orElseThrow(() -> new MealNotFoundException("Meal not found"));
 
         meal.setMealName(updateMealRequest.getMealName());
         meal.setCalories(updateMealRequest.getCalories());

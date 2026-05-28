@@ -2,15 +2,22 @@ package com.CalorieX.CalorieX_Backend.dto;
 
 import com.CalorieX.CalorieX_Backend.entity.User;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class SetGoalsRequest {
 
+    @NotNull
+    @Min(0)
     private Integer targetCalories;
-
+    @NotNull
+    @Min(0)
     private Double targetProtein;
-
+    @NotNull
+    @Min(0)
     private Double targetFats;
-
+    @NotNull
+    @Min(0)
     private Double targetCarbs;
 
 
