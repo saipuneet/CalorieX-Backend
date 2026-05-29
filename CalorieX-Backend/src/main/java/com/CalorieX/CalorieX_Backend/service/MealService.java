@@ -9,6 +9,7 @@ import com.CalorieX.CalorieX_Backend.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -86,7 +87,7 @@ public class MealService {
 
         //Craete the pageable Instruction
 
-        Pageable pageable = PageRequest.of(page,size);
+        Pageable pageable = PageRequest.of(page,size, Sort.by("date").descending());
 
         //Fetch all the meals belong the user  and page instructions
         Page<Meal> mealPage = mealRepository.findByUser(user,pageable);
