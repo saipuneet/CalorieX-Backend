@@ -1,9 +1,6 @@
 package com.CalorieX.CalorieX_Backend.service;
 
-import com.CalorieX.CalorieX_Backend.dto.AddMealRequest;
-import com.CalorieX.CalorieX_Backend.dto.MealResponse;
-import com.CalorieX.CalorieX_Backend.dto.NutritionSummaryResoponse;
-import com.CalorieX.CalorieX_Backend.dto.UpdateMealRequest;
+import com.CalorieX.CalorieX_Backend.dto.*;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.exception.MealNotFoundException;
@@ -73,7 +70,7 @@ public class MealService {
 
     }
 
-    public List<MealResponse> getMeals(int page,int size){
+    public MealPageResponse getMeals(int page, int size){
 
 
         // getting the authentication user email
@@ -116,7 +113,16 @@ public class MealService {
             mealResponses.add(mealResponse);
         }
 
-           return mealResponses;
+        //Create Pagination Dto
+
+        MealPageResponse mealPageResponse = new MealPageResponse();
+
+        mealPageResponse.setMeals(mealResponses);
+        mealPageResponse.setCurrentPage(mealPage.getNumber());
+        mealPageResponse.setTotalPage(mealPage.getTotalPages());
+        mealPageResponse.setTotalElement(mealPageResponse.getTotalElement());
+
+        return mealPageResponse;
     }
 
     public String deleteMeal(Long mealId){

@@ -1,10 +1,8 @@
 package com.CalorieX.CalorieX_Backend.controller;
 
 
-import com.CalorieX.CalorieX_Backend.dto.AddMealRequest;
-import com.CalorieX.CalorieX_Backend.dto.MealResponse;
-import com.CalorieX.CalorieX_Backend.dto.NutritionSummaryResoponse;
-import com.CalorieX.CalorieX_Backend.dto.UpdateMealRequest;
+import com.CalorieX.CalorieX_Backend.dto.*;
+import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.service.MealService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +25,7 @@ public class MealController {
     }
 
     @GetMapping("/getMeal")
-    public List<MealResponse> getMeal(@RequestParam int page,@RequestParam int Size){
+    public MealPageResponse getMeal(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int Size){
         return mealService.getMeals(page, Size);
     }
 

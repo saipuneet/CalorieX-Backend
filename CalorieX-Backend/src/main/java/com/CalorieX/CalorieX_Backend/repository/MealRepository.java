@@ -13,8 +13,11 @@ import java.util.Optional;
 @Repository
 public interface MealRepository extends JpaRepository<Meal, Long> {
 
-    //Find the user meal
+    //Find the user meal with pagination
     Page<Meal> findByUser(User user,Pageable pageable);
+
+    //Find the user from user database
+    List<Meal> findByUser(User user);
 
    Optional<Meal> findByIdAndUser(Long id,User user);
 }
