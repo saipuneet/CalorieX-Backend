@@ -27,8 +27,8 @@ public class MealController {
     }
 
     @GetMapping("/getMeal")
-    public List<MealResponse> getMeal(){
-        return mealService.getMeals();
+    public List<MealResponse> getMeal(@RequestParam int page,@RequestParam int Size){
+        return mealService.getMeals(page, Size);
     }
 
     @DeleteMapping("/{mealId}")

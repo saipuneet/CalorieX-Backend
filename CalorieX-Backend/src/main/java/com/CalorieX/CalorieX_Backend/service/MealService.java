@@ -9,6 +9,9 @@ import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.exception.MealNotFoundException;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -70,7 +73,7 @@ public class MealService {
 
     }
 
-    public List<MealResponse> getMeals(){
+    public List<MealResponse> getMeals(int page,int size){
 
 
         // getting the authentication user email
@@ -84,8 +87,15 @@ public class MealService {
                 .findByEmail(email)
                 .orElseThrow(()-> new RuntimeException("User not found"));
 
-        //Fetch all the meals belong the user
-        List<Meal> meals = mealRepository.findByUser(user);
+        //Craete the pageable Instruction
+
+        Pageable pageable = PageRequest.of(page,size);
+
+        //Fetch all the meals belong the user  and page instructions
+        Page<Meal> mealPage = mealRepository.findByUser(user,pageable);
+
+        //Extract the actual meal data
+        List<Meal> meals = mealPage.getContent();
 
         //Create a MealResponse List
         List<MealResponse> mealResponses = new ArrayList<>();
