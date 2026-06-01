@@ -20,4 +20,6 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
     List<Meal> findByUser(User user);
 
    Optional<Meal> findByIdAndUser(Long id,User user);
+
+   Page<Meal> findByUserAndMealNameContainingIgnoreCase(User user,String Keyword,Pageable pageable);
 }

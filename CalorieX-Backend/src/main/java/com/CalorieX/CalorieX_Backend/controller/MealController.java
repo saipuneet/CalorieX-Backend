@@ -44,5 +44,13 @@ public class MealController {
         return mealService.updateMeal(mealId,updateMealRequest);
     }
 
+    @GetMapping("/search")
+    public MealPageResponse searchMeals(@RequestParam String Keyword,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size){
+
+        return mealService.searchMeal(Keyword,page,size);
+
+    }
 
 }

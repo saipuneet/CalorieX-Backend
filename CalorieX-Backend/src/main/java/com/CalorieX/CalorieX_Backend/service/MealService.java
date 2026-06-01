@@ -4,6 +4,7 @@ import com.CalorieX.CalorieX_Backend.dto.*;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.exception.MealNotFoundException;
+import com.CalorieX.CalorieX_Backend.exception.UserNotFoundException;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
 import com.CalorieX.CalorieX_Backend.repository.UserRepository;
 import org.springframework.data.domain.Page;
@@ -85,7 +86,7 @@ public class MealService {
                 .findByEmail(email)
                 .orElseThrow(()-> new RuntimeException("User not found"));
 
-        //Craete the pageable Instruction
+        //Craete the pageable Instruction tells the page number and size and sorting
 
         Pageable pageable = PageRequest.of(page,size, Sort.by("date").descending());
 
@@ -201,6 +202,66 @@ public class MealService {
         mealRepository.save(meal);
 
         return "Meals update successfully";
+
+    }
+
+    public MealPageResponse searchMeal(String Keyword,int page,int size){
+
+
+        //Validing the keyword
+
+        if(Keyword == null || Keyword.isBlank()){
+            throw new IllegalArgumentException("Keyword Cannot be empty");
+        }
+        // find the authenticated email
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        //Find the user from user database
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
+        //Create the Pageable object
+        Pageable pageable = PageRequest.of(page,size,Sort.by("date").descending());
+
+        //fetch all the meals of the authenticated user
+        Page<Meal> meals = mealRepository.findByUserAndMealNameContainingIgnoreCase(user,Keyword, pageable);
+
+        //Extract the actual data
+        List<Meal> mealls = meals.getContent();
+
+         //Convert the entity -> DTO
+        //Craete the mealResponse object to store the data
+        List<MealResponse> mealResponses = new ArrayList<>();
+
+        for(Meal meal :mealls){
+            MealResponse mealResponse = new MealResponse();
+
+            mealResponse.setId(meal.getId());
+            mealResponse.setMealName(meal.getMealName());
+            mealResponse.setCalories(meal.getCalories());
+            mealResponse.setProtein(meal.getProtein());
+            mealResponse.setFats(meal.getFats());
+            mealResponse.setCarbs(meal.getCarbs());
+            mealResponse.setMealType(meal.getMealType());
+            mealResponse.setDate(meal.getDate());
+            mealResponses.add(mealResponse);
+        }
+
+        //Build the response
+        MealPageResponse mealPageResponse = new MealPageResponse();
+
+        mealPageResponse.setMeals(mealResponses);
+        mealPageResponse.setCurrentPage(meals.getNumber());
+        mealPageResponse.setTotalPage(meals.getTotalPages());
+        mealPageResponse.setTotalElement(meals.getTotalElements());
+
+        return mealPageResponse;
+
+
+
 
     }
 }
