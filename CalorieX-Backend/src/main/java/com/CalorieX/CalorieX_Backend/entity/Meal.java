@@ -22,7 +22,8 @@ public class Meal {
 
     private Double fats;
 
-    private String mealType;
+    @Enumerated(EnumType.STRING)
+    private MealType mealType;
 
     private LocalDate date;
 
@@ -33,7 +34,7 @@ public class Meal {
 
     }
 
-    public Meal(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, String mealType, LocalDate date, User user) {
+    public Meal(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, MealType mealType, LocalDate date, User user) {
         this.id = id;
         this.mealName = mealName;
         this.calories = calories;
@@ -93,11 +94,11 @@ public class Meal {
         this.fats = fats;
     }
 
-    public String getMealType() {
+    public MealType getMealType() {
         return mealType;
     }
 
-    public void setMealType(String mealType) {
+    public void setMealType(MealType mealType) {
         this.mealType = mealType;
     }
 

@@ -3,10 +3,12 @@ package com.CalorieX.CalorieX_Backend.controller;
 
 import com.CalorieX.CalorieX_Backend.dto.*;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
+import com.CalorieX.CalorieX_Backend.entity.MealType;
 import com.CalorieX.CalorieX_Backend.service.MealService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -52,5 +54,29 @@ public class MealController {
         return mealService.searchMeal(Keyword,page,size);
 
     }
+
+
+    @GetMapping("/filter")
+    public MealPageResponse filterMeals(@RequestParam MealType mealType,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size){
+        return mealService.filterMeals(mealType,page,size);
+    }
+
+    @GetMapping("/filter/date")
+    public MealPageResponse filterMealsBydate(@RequestParam LocalDate date,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size){
+        return mealService.filterMealsByDate(date,page,size);
+    }
+
+    @GetMapping("/filter/mealtype-date")
+    public MealPageResponse filterMealsByMealTypeAndDate(@RequestParam MealType mealType,
+                                                         @RequestParam LocalDate date,
+                                                         @RequestParam(defaultValue = "0") int page,
+                                                         @RequestParam(defaultValue = "10") int size){
+        return mealService.filterMealsByMealTypeAndDate(mealType,date,page,size);
+    }
+
 
 }

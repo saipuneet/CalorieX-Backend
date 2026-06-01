@@ -1,5 +1,6 @@
 package com.CalorieX.CalorieX_Backend.dto;
 
+import com.CalorieX.CalorieX_Backend.entity.MealType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,10 +26,10 @@ public class AddMealRequest {
     @Min(0)
     private Double fats;
 
-    @NotBlank
-    private String mealType;
+    @NotNull
+    private MealType mealType;
 
-    public AddMealRequest(String mealName, Integer calories, Double protein, Double carbs, Double fats, String mealType) {
+    public AddMealRequest(String mealName, Integer calories, Double protein, Double carbs, Double fats, MealType mealType) {
         this.mealName = mealName;
         this.calories = calories;
         this.protein = protein;
@@ -77,11 +78,11 @@ public class AddMealRequest {
         this.fats = fats;
     }
 
-    public String getMealType() {
+    public MealType getMealType() {
         return mealType;
     }
 
-    public void setMealType(String mealType) {
+    public void setMealType(MealType mealType) {
         this.mealType = mealType;
     }
 }

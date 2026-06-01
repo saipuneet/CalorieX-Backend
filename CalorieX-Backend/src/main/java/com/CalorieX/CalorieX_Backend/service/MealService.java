@@ -2,6 +2,7 @@ package com.CalorieX.CalorieX_Backend.service;
 
 import com.CalorieX.CalorieX_Backend.dto.*;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
+import com.CalorieX.CalorieX_Backend.entity.MealType;
 import com.CalorieX.CalorieX_Backend.entity.User;
 import com.CalorieX.CalorieX_Backend.exception.MealNotFoundException;
 import com.CalorieX.CalorieX_Backend.exception.UserNotFoundException;
@@ -260,8 +261,160 @@ public class MealService {
 
         return mealPageResponse;
 
+    }
+
+    public MealPageResponse filterMeals(MealType mealType,int page,int size ){
+
+        // get the authenticated user email
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //get the user entity
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // create the pageable
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+
+        // Call the reposiotory
+
+        Page<Meal> mealPage = mealRepository.findByUserAndMealType(user, mealType, pageable);
+
+        // extract the actudaldata from pagination
+
+        List<Meal> meals = mealPage.getContent();
+
+        // convert the meals into mealResponse
+
+        List<MealResponse> mealResponseList = new ArrayList<>();
+
+        for (Meal meal : meals) {
+            MealResponse mealResponse = new MealResponse();
+
+            mealResponse.setId(meal.getId());
+            mealResponse.setMealName(meal.getMealName());
+            mealResponse.setCalories(meal.getCalories());
+            mealResponse.setProtein(meal.getProtein());
+            mealResponse.setFats(meal.getFats());
+            mealResponse.setCarbs(meal.getCarbs());
+            mealResponse.setMealType(meal.getMealType());
+            mealResponse.setDate(meal.getDate());
+            mealResponseList.add(mealResponse);
+        }
+
+        //creating the mealpageResponse
+        MealPageResponse mealPageResponse = new MealPageResponse();
+
+        mealPageResponse.setMeals(mealResponseList);
+        mealPageResponse.setCurrentPage(mealPage.getNumber());
+        mealPageResponse.setTotalPage(mealPage.getTotalPages());
+        mealPageResponse.setTotalElement(mealPage.getTotalElements());
+
+        return mealPageResponse;
+    }
 
 
+    public MealPageResponse filterMealsByDate(LocalDate date, int page, int size) {
 
+        ///get the authenticated user email
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //get the user entity
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // create the pageable
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+
+        // Call the reposiotory
+
+        Page<Meal> mealPage = mealRepository.findByUserAndDate(user,date,pageable);
+
+        // extract the actudaldata from pagination
+
+        List<Meal> meals = mealPage.getContent();
+
+        // convert the meals into mealResponse
+
+        List<MealResponse> mealResponseList = new ArrayList<>();
+
+        for (Meal meal : meals) {
+            MealResponse mealResponse = new MealResponse();
+
+            mealResponse.setId(meal.getId());
+            mealResponse.setMealName(meal.getMealName());
+            mealResponse.setCalories(meal.getCalories());
+            mealResponse.setProtein(meal.getProtein());
+            mealResponse.setFats(meal.getFats());
+            mealResponse.setCarbs(meal.getCarbs());
+            mealResponse.setMealType(meal.getMealType());
+            mealResponse.setDate(meal.getDate());
+            mealResponseList.add(mealResponse);
+        }
+
+        //creating the mealpageResponse
+        MealPageResponse mealPageResponse = new MealPageResponse();
+
+        mealPageResponse.setMeals(mealResponseList);
+        mealPageResponse.setCurrentPage(mealPage.getNumber());
+        mealPageResponse.setTotalPage(mealPage.getTotalPages());
+        mealPageResponse.setTotalElement(mealPage.getTotalElements());
+
+        return mealPageResponse;
+    }
+
+
+    public MealPageResponse filterMealsByMealTypeAndDate(MealType mealType, LocalDate date, int page, int size) {
+        ///get the authenticated user email
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //get the user entity
+
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        // create the pageable
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+
+        // Call the reposiotory
+
+        Page<Meal> mealPage = mealRepository.findByUserAndMealTypeAndDate(user,mealType,date,pageable);
+
+        // extract the actudaldata from pagination
+
+        List<Meal> meals = mealPage.getContent();
+
+        // convert the meals into mealResponse
+
+        List<MealResponse> mealResponseList = new ArrayList<>();
+
+        for (Meal meal : meals) {
+            MealResponse mealResponse = new MealResponse();
+
+            mealResponse.setId(meal.getId());
+            mealResponse.setMealName(meal.getMealName());
+            mealResponse.setCalories(meal.getCalories());
+            mealResponse.setProtein(meal.getProtein());
+            mealResponse.setFats(meal.getFats());
+            mealResponse.setCarbs(meal.getCarbs());
+            mealResponse.setMealType(meal.getMealType());
+            mealResponse.setDate(meal.getDate());
+            mealResponseList.add(mealResponse);
+        }
+
+        //creating the mealpageResponse
+        MealPageResponse mealPageResponse = new MealPageResponse();
+
+        mealPageResponse.setMeals(mealResponseList);
+        mealPageResponse.setCurrentPage(mealPage.getNumber());
+        mealPageResponse.setTotalPage(mealPage.getTotalPages());
+        mealPageResponse.setTotalElement(mealPage.getTotalElements());
+
+        return mealPageResponse;
     }
 }
+

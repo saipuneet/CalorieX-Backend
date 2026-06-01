@@ -1,5 +1,7 @@
 package com.CalorieX.CalorieX_Backend.dto;
 
+import com.CalorieX.CalorieX_Backend.entity.MealType;
+
 import java.time.LocalDate;
 
 public class MealResponse {
@@ -16,7 +18,7 @@ public class MealResponse {
 
     private Double fats;
 
-    private String mealType;
+    private MealType mealType;
 
     private LocalDate date;
 
@@ -24,7 +26,7 @@ public class MealResponse {
 
     }
 
-    public MealResponse(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, String mealType, LocalDate date) {
+    public MealResponse(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, MealType mealType, LocalDate date) {
         this.id = id;
         this.mealName = mealName;
         this.calories = calories;
@@ -83,11 +85,11 @@ public class MealResponse {
         this.fats = fats;
     }
 
-    public String getMealType() {
+    public MealType getMealType() {
         return mealType;
     }
 
-    public void setMealType(String mealType) {
+    public void setMealType(MealType mealType) {
         this.mealType = mealType;
     }
 
