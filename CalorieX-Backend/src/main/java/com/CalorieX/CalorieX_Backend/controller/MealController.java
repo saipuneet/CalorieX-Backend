@@ -5,6 +5,7 @@ import com.CalorieX.CalorieX_Backend.dto.*;
 import com.CalorieX.CalorieX_Backend.entity.Meal;
 import com.CalorieX.CalorieX_Backend.entity.MealType;
 import com.CalorieX.CalorieX_Backend.service.MealService;
+import com.CalorieX.CalorieX_Backend.service.MealServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +17,12 @@ import java.util.List;
 public class MealController {
 
     private final MealService mealService;
+    private final MealServiceImpl mealServices;
 
-    public MealController(MealService mealService) {
+    public MealController(MealService mealService, MealServiceImpl mealServices) {
+
         this.mealService = mealService;
+        this.mealServices = mealServices;
     }
 
     @PostMapping("/addmeal")
@@ -76,6 +80,11 @@ public class MealController {
                                                          @RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size){
         return mealService.filterMealsByMealTypeAndDate(mealType,date,page,size);
+    }
+
+    @PostMapping("/add-from-food")
+    public MealServiceResponse addFoodToMeals(@RequestBody AddFoodToMealRequest addFoodToMealRequest){
+        return mealServices.addFoodToMeal(addFoodToMealRequest);
     }
 
 

@@ -1,5 +1,6 @@
 package com.CalorieX.CalorieX_Backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class User {
     @Column(unique = true,nullable = false)
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private Integer age;
