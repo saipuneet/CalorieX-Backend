@@ -1,11 +1,9 @@
 package com.CalorieX.CalorieX_Backend.controller;
 
+import com.CalorieX.CalorieX_Backend.dto.FoodDetailsResponse;
 import com.CalorieX.CalorieX_Backend.dto.FoodSearchResponse;
 import com.CalorieX.CalorieX_Backend.service.FoodServiceImpl;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +23,10 @@ public class FoodController {
 
         return foodService.searchFoods(query);
 
+    }
+
+    @GetMapping("/{id}")
+    public FoodDetailsResponse getFoodDetails(@PathVariable Long id, @RequestParam(defaultValue = "100") Double amount){
+        return foodService.getFoodDetails(id,amount);
     }
 }

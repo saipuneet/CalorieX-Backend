@@ -1,7 +1,6 @@
 package com.CalorieX.CalorieX_Backend.service;
 
-import com.CalorieX.CalorieX_Backend.dto.FoodApiResponse;
-import com.CalorieX.CalorieX_Backend.dto.FoodSearchResponse;
+import com.CalorieX.CalorieX_Backend.dto.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -61,4 +60,57 @@ public class FoodServiceImpl implements FoodService{
 
         return foodApiResponse.getResults();
     }
+
+    @Override
+    public FoodDetailsResponse getFoodDetails(Long id,Double amount){
+
+        //Build the url
+        String url = "https://api.spoonacular.com/food/ingredients/"
+                + id
+                + "/information?amount=" + amount + "&apiKey="
+                + apiKey;
+
+
+        // call the external api using resttemplate
+
+        IngredientInformationResponse ingredientInformationResponse = restTemplate.getForObject(url, IngredientInformationResponse.class);
+
+
+        if(ingredientInformationResponse == null){
+            return null;
+        }
+
+        // creating the fooddetailsresponse object
+        FoodDetailsResponse foodDetailsResponse = new FoodDetailsResponse();
+
+        foodDetailsResponse.setId(ingredientInformationResponse.getId());
+        foodDetailsResponse.setName(ingredientInformationResponse.getName());
+
+        // if there is no nutrition its like a validation not to crash the application
+        if (ingredientInformationResponse.getNutrition() == null) {
+            return foodDetailsResponse;
+        }
+
+
+        for(Nutrient nutrient : ingredientInformationResponse.getNutrition().getNutrients()){
+            if("Calories".equals(nutrient.getName())){
+                foodDetailsResponse.setCalories(nutrient.getAmount());
+            }
+            if("Protein".equals(nutrient.getName())){
+                foodDetailsResponse.setProtein(nutrient.getAmount());
+            }
+
+            if("Carbohydrates".equals(nutrient.getName())){
+                foodDetailsResponse.setCarbs(nutrient.getAmount());
+            }
+
+            if("Fat".equals(nutrient.getName())){
+                foodDetailsResponse.setFat(nutrient.getAmount());
+            }
+        }
+        return foodDetailsResponse;
+
+    }
+
+
 }
