@@ -6,10 +6,9 @@ import com.CalorieX.CalorieX_Backend.dto.WeightLogResponse;
 import com.CalorieX.CalorieX_Backend.service.WeightLogService;
 import com.CalorieX.CalorieX_Backend.service.WeightLogServiceImpl;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/weights")
@@ -28,5 +27,10 @@ public class WeightController {
             @RequestBody AddWeightLogRequest request) {
 
         return weightLogService.addWeight(request);
+    }
+
+    @GetMapping("/history")
+    public List<WeightLogResponse> history(){
+        return weightLogService.getWeightHistory();
     }
 }

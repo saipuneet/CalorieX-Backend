@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,7 +72,43 @@ public class WeightLogServiceImpl implements WeightLogService{
         weightLogResponse.setWeight(savedWeightLog.getWeight());
         weightLogResponse.setDate(savedWeightLog.getDate());
 
+        System.out.println("Saved Entity Date = " + savedWeightLog.getDate());
+
+        System.out.println("DTO Date = " + weightLogResponse.getDate());
+
         return weightLogResponse;
 
     }
+
+
+    @Override
+    public List<WeightLogResponse> getWeightHistory() {
+        // get the authenticated user
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        //Find the user
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User Not Found"));
+
+        //Get the weightLogs
+
+        List<WeightLog> weightLog = weightLogRepository.findByUserOrderByDateDesc(user);
+
+        //Convert the entity into Dto
+
+        List<WeightLogResponse> weightLogResponses = new ArrayList<>();
+
+        for (WeightLog weightLog1 : weightLog) {
+            WeightLogResponse weightLogResponse = new WeightLogResponse();
+            weightLogResponse.setId(weightLog1.getId());
+            weightLogResponse.setWeight(weightLog1.getWeight());
+            weightLogResponse.setDate(weightLog1.getDate());
+            weightLogResponses.add(weightLogResponse);
+        }
+
+
+        return weightLogResponses;
+
+    }
+
+
 }
