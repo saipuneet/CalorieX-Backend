@@ -22,6 +22,9 @@ import java.util.Optional;
 
 @Service
 public class MealService {
+    /*
+    This mealservice is used by manually entering detaills like meal and caloires and extras"
+     */
 
     private UserRepository userRepository;
 

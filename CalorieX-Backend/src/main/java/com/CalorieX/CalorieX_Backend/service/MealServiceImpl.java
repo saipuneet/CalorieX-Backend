@@ -16,6 +16,10 @@ import java.time.LocalDate;
 @Service
 public class MealServiceImpl implements MealsService{
 
+    /*
+    This mealservice class is using with third party api called spoonacular"
+     */
+
     private final MealRepository mealRepository;
 
     private final UserRepository userRepository;
