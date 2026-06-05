@@ -1,13 +1,19 @@
 package com.CalorieX.CalorieX_Backend.dto;
 
 import com.CalorieX.CalorieX_Backend.entity.MealType;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class AddFoodToMealRequest {
 
+    @NotNull(message = "FoodId is Required")
     private Long foodId;
 
+    @NotNull(message = "Amount is required")
+    @Positive(message = "Amount is greater than 0")
     private Double amount;
 
+    @NotNull(message = "Meal type is required")
     private MealType mealType;
 
     public AddFoodToMealRequest(){
