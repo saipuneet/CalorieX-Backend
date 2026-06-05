@@ -3,6 +3,7 @@ package com.CalorieX.CalorieX_Backend.controller;
 
 import com.CalorieX.CalorieX_Backend.dto.AddWeightLogRequest;
 import com.CalorieX.CalorieX_Backend.dto.WeightLogResponse;
+import com.CalorieX.CalorieX_Backend.dto.WeightProgressResponse;
 import com.CalorieX.CalorieX_Backend.service.WeightLogService;
 import com.CalorieX.CalorieX_Backend.service.WeightLogServiceImpl;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,12 @@ public class WeightController {
 
     @GetMapping("/history")
     public List<WeightLogResponse> history(){
+
         return weightLogService.getWeightHistory();
+    }
+
+    @GetMapping("/progress")
+    public WeightProgressResponse getWeightProgress(){
+        return weightLogService.getWeightProgress();
     }
 }
