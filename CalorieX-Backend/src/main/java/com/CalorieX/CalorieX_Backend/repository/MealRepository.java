@@ -21,6 +21,8 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
     //Find the user from user database
     List<Meal> findByUser(User user);
 
+    List<Meal> findByUserAndDate(User user, LocalDate date);
+
    Optional<Meal> findByIdAndUser(Long id,User user);
 
    Page<Meal> findByUserAndMealNameContainingIgnoreCase(User user,String Keyword,Pageable pageable);
