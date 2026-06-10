@@ -1,6 +1,8 @@
 package com.CalorieX.CalorieX_Backend.service;
 
 import com.CalorieX.CalorieX_Backend.dto.*;
+import com.CalorieX.CalorieX_Backend.entity.Food;
+import com.CalorieX.CalorieX_Backend.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -15,14 +17,17 @@ public class FoodServiceImpl implements FoodService{
 
     //Injecting the resttemplate
     private final RestTemplate restTemplate;
+
+    private final FoodRepository foodRepository;
     @Value("${spoonacular.api.key}")
     private String apiKey;
     ;
 
 
-    public FoodServiceImpl(RestTemplate restTemplate){
+    public FoodServiceImpl(RestTemplate restTemplate, FoodRepository foodRepository){
         
         this.restTemplate = restTemplate;
+        this.foodRepository = foodRepository;
     }
     
     
@@ -32,6 +37,22 @@ public class FoodServiceImpl implements FoodService{
 
     @Override
     public List<FoodSearchResponse> searchFoods(String query) {
+
+        List<Food> foods = foodRepository.findByNameContainingIgnoreCase(query);
+
+        if(!foods.isEmpty()){
+            return foods.stream().map(food -> {
+                FoodSearchResponse response = new FoodSearchResponse();
+
+                response.setId(food.getId());
+                response.setName(food.getName());
+                response.setCalories(food.getCalories());
+                response.setProtein(food.getProtein());
+                response.setCarbs(food.getCarbs());
+                response.setFats(food.getFats());
+                return response;
+            }).toList();
+        }
 
 
          // build the url
@@ -63,6 +84,9 @@ public class FoodServiceImpl implements FoodService{
 
     @Override
     public FoodDetailsResponse getFoodDetails(Long id,Double amount){
+
+
+
 
         //Build the url
         String url = "https://api.spoonacular.com/food/ingredients/"

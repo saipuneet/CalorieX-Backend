@@ -1,23 +1,22 @@
-package com.CalorieX.CalorieX_Backend.dto;
+package com.CalorieX.CalorieX_Backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 
-public class FoodSearchResponse {
+@Entity
+@Table(name = "food")
+public class Food {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-
     private Integer calories;
-
     private Double protein;
-
     private Double carbs;
-
     private Double fats;
 
 
-    public FoodSearchResponse(){
+    public Food(){
 
     }
 
@@ -68,4 +67,6 @@ public class FoodSearchResponse {
     public void setFats(Double fats) {
         this.fats = fats;
     }
+
+
 }
