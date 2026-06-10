@@ -58,9 +58,16 @@ public class DashBoardServiceImpl implements  DashboardService{
 
         // Calculate today's calories
         Integer todayCalories = 0;
+        Double todayProtein=0.0;
+        Double todayCarbs =0.0;
+        Double todayFats =0.0;
+
 
         for (Meal meal : meals) {
             todayCalories += meal.getCalories();
+            todayProtein += meal.getProtein();
+            todayCarbs += meal.getCarbs();
+            todayFats += meal.getFats();
         }
 
         // Goal calories
@@ -68,6 +75,9 @@ public class DashBoardServiceImpl implements  DashboardService{
 
         // Remaining calories
         Integer remainingCalories = goalCalories - todayCalories;
+        Double proteinGoal = user.getWeight() *2.2;
+        Double carbsGoal = user.getWeight() * 4;
+        Double fatsGoal = user.getWeight() * 1;
 
         // Get weight progress
         WeightProgressResponse weightProgress =
@@ -92,6 +102,12 @@ public class DashBoardServiceImpl implements  DashboardService{
 
         dashboardResponse.setMealsLoggedToday(
                 meals.size());
+        dashboardResponse.setProteinConsumed(todayProtein);
+        dashboardResponse.setProteinGoal(proteinGoal);
+        dashboardResponse.setCarbsConsumed(todayCarbs);
+        dashboardResponse.setCarbsGoal(carbsGoal);
+        dashboardResponse.setFatsConsumed(todayFats);
+        dashboardResponse.setFatsGoal(fatsGoal);
 
         return dashboardResponse;
     }
