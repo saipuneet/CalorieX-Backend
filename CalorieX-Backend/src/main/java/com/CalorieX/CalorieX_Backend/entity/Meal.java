@@ -37,6 +37,9 @@ public class Meal {
     @ManyToOne
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    private FoodSource foodSource;
+
     public Meal(){
 
     }
@@ -150,5 +153,13 @@ public class Meal {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public FoodSource getFoodSource() {
+        return foodSource;
+    }
+
+    public void setFoodSource(FoodSource foodSource) {
+        this.foodSource = foodSource;
     }
 }

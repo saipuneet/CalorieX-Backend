@@ -3,9 +3,7 @@ package com.CalorieX.CalorieX_Backend.service;
 import com.CalorieX.CalorieX_Backend.dto.AddFoodToMealRequest;
 import com.CalorieX.CalorieX_Backend.dto.FoodDetailsResponse;
 import com.CalorieX.CalorieX_Backend.dto.MealServiceResponse;
-import com.CalorieX.CalorieX_Backend.entity.Food;
-import com.CalorieX.CalorieX_Backend.entity.Meal;
-import com.CalorieX.CalorieX_Backend.entity.User;
+import com.CalorieX.CalorieX_Backend.entity.*;
 import com.CalorieX.CalorieX_Backend.exception.UserNotFoundException;
 import com.CalorieX.CalorieX_Backend.repository.FoodRepository;
 import com.CalorieX.CalorieX_Backend.repository.MealRepository;
@@ -31,11 +29,16 @@ public class MealServiceImpl implements MealsService {
 
     private final FoodRepository foodRepository;
 
-    public MealServiceImpl(MealRepository mealRepository, UserRepository userRepository, FoodService foodService, FoodRepository foodRepository) {
+    private final MealBuilderService mealBuilderService;
+
+
+
+    public MealServiceImpl(MealRepository mealRepository, UserRepository userRepository, FoodService foodService, FoodRepository foodRepository, MealBuilderService mealBuilderService) {
         this.mealRepository = mealRepository;
         this.userRepository = userRepository;
         this.foodService = foodService;
         this.foodRepository = foodRepository;
+        this.mealBuilderService = mealBuilderService;
     }
 
     @Override
@@ -53,7 +56,7 @@ public class MealServiceImpl implements MealsService {
                 .orElseThrow(() ->
                         new UserNotFoundException("User not found"));
 
-        Meal meal = new Meal();
+Meal meal;
 
         // First check local database
         Food food = foodRepository
@@ -77,11 +80,21 @@ public class MealServiceImpl implements MealsService {
             double fats =
                     (food.getFats() * amount) / 100;
 
-            meal.setMealName(food.getName());
-            meal.setCalories((int) calories);
-            meal.setProtein(protein);
-            meal.setCarbs(carbs);
-            meal.setFats(fats);
+            meal = mealBuilderService.createMeal(
+                    user,
+                    food.getName(),
+                    (int) Math.round(calories),
+                    protein,
+                    carbs,
+                    fats,
+                    addFoodToMealRequest.getFoodId(),
+                    FoodSource.LOCAL,
+                    amount,
+                    addFoodToMealRequest.getUnit(),
+                    addFoodToMealRequest.getMealType()
+            );
+
+
 
         } else {
 
@@ -91,50 +104,28 @@ public class MealServiceImpl implements MealsService {
                             addFoodToMealRequest.getFoodId(),
                             addFoodToMealRequest.getAmount());
 
-            meal.setMealName(foodDetailsResponse.getName());
-            meal.setCalories(foodDetailsResponse.getCalories().intValue());
-            meal.setProtein(foodDetailsResponse.getProtein());
-            meal.setCarbs(foodDetailsResponse.getCarbs());
-            meal.setFats(foodDetailsResponse.getFat());
+            meal = mealBuilderService.createMeal(
+                    user,
+                    foodDetailsResponse.getName(),
+                    foodDetailsResponse.getCalories().intValue(),
+                    foodDetailsResponse.getProtein(),
+                    foodDetailsResponse.getCarbs(),
+                    foodDetailsResponse.getFat(),
+                    addFoodToMealRequest.getFoodId(),
+                    FoodSource.SPOONACULAR,
+                    addFoodToMealRequest.getAmount(),
+                    addFoodToMealRequest.getUnit(),
+                    addFoodToMealRequest.getMealType()
+            );
+
+
         }
-
-        // Common meal fields
-        meal.setFoodId(addFoodToMealRequest.getFoodId());
-        meal.setQuantity(addFoodToMealRequest.getAmount());
-        meal.setUnit(addFoodToMealRequest.getUnit());
-        meal.setMealType(addFoodToMealRequest.getMealType());
-        meal.setDate(LocalDate.now());
-        meal.setUser(user);
-
-        System.out.println("========== REQUEST ==========");
-        System.out.println("FoodId = " + addFoodToMealRequest.getFoodId());
-        System.out.println("Amount = " + addFoodToMealRequest.getAmount());
-        System.out.println("Unit = " + addFoodToMealRequest.getUnit());
-
-        System.out.println("========== MEAL ==========");
-        System.out.println("FoodId = " + meal.getFoodId());
-        System.out.println("Quantity = " + meal.getQuantity());
-        System.out.println("Unit = " + meal.getUnit());
 
         // Save meal
         Meal savedMeal = mealRepository.save(meal);
 
         // Convert Entity -> DTO
-        MealServiceResponse response = new MealServiceResponse();
-
-        response.setId(savedMeal.getId());
-        response.setMealName(savedMeal.getMealName());
-        response.setCalories(savedMeal.getCalories());
-        response.setProtein(savedMeal.getProtein());
-        response.setCarbs(savedMeal.getCarbs());
-        response.setFats(savedMeal.getFats());
-        response.setMealType(savedMeal.getMealType());
-        response.setDate(savedMeal.getDate());
-        response.setFoodId(savedMeal.getFoodId());
-        response.setQuantity(savedMeal.getQuantity());
-        response.setUnit(savedMeal.getUnit());
-
-        return response;
+       return mealBuilderService.buildMealResponse(savedMeal);
     }
 
     @Override
@@ -173,4 +164,12 @@ public class MealServiceImpl implements MealsService {
                 })
                 .toList();
     }
+
+
+
+
+
+
+
+
 }
