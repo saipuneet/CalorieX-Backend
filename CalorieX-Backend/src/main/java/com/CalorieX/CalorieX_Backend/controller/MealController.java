@@ -87,5 +87,12 @@ public class MealController {
         return mealServices.addFoodToMeal(addFoodToMealRequest);
     }
 
+    @GetMapping("/recent")
+    public List<MealServiceResponse> getRecentMeals() {
+
+        return mealServices.getRecentMeals();
+
+    }
+
 
 }

@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class MealServiceImpl implements MealsService {
@@ -98,9 +99,22 @@ public class MealServiceImpl implements MealsService {
         }
 
         // Common meal fields
+        meal.setFoodId(addFoodToMealRequest.getFoodId());
+        meal.setQuantity(addFoodToMealRequest.getAmount());
+        meal.setUnit(addFoodToMealRequest.getUnit());
         meal.setMealType(addFoodToMealRequest.getMealType());
         meal.setDate(LocalDate.now());
         meal.setUser(user);
+
+        System.out.println("========== REQUEST ==========");
+        System.out.println("FoodId = " + addFoodToMealRequest.getFoodId());
+        System.out.println("Amount = " + addFoodToMealRequest.getAmount());
+        System.out.println("Unit = " + addFoodToMealRequest.getUnit());
+
+        System.out.println("========== MEAL ==========");
+        System.out.println("FoodId = " + meal.getFoodId());
+        System.out.println("Quantity = " + meal.getQuantity());
+        System.out.println("Unit = " + meal.getUnit());
 
         // Save meal
         Meal savedMeal = mealRepository.save(meal);
@@ -116,8 +130,47 @@ public class MealServiceImpl implements MealsService {
         response.setFats(savedMeal.getFats());
         response.setMealType(savedMeal.getMealType());
         response.setDate(savedMeal.getDate());
+        response.setFoodId(savedMeal.getFoodId());
+        response.setQuantity(savedMeal.getQuantity());
+        response.setUnit(savedMeal.getUnit());
 
         return response;
     }
 
+    @Override
+    public List<MealServiceResponse> getRecentMeals() {
+
+        String email = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository
+                .findByEmail(email)
+                .orElseThrow(() ->
+                        new UserNotFoundException("User not found"));
+
+        List<Meal> meals =
+                mealRepository.findTop5ByUserOrderByIdDesc(user);
+
+        return meals.stream()
+                .map(meal -> {
+
+                    MealServiceResponse response =
+                            new MealServiceResponse();
+
+                    response.setId(meal.getId());
+                    response.setMealName(meal.getMealName());
+                    response.setCalories(meal.getCalories());
+                    response.setProtein(meal.getProtein());
+                    response.setCarbs(meal.getCarbs());
+                    response.setFats(meal.getFats());
+                    response.setMealType(meal.getMealType());
+                    response.setDate(meal.getDate());
+
+                    return response;
+
+                })
+                .toList();
+    }
 }

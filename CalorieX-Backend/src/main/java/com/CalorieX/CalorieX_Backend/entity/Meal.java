@@ -27,6 +27,13 @@ public class Meal {
 
     private LocalDate date;
 
+    private Long foodId;
+
+    private Double quantity;
+
+    private String unit;
+
+
     @ManyToOne
     private User user;
 
@@ -34,7 +41,7 @@ public class Meal {
 
     }
 
-    public Meal(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, MealType mealType, LocalDate date, User user) {
+    public Meal(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, MealType mealType, LocalDate date, Long foodId, Double quantity, String unit, User user) {
         this.id = id;
         this.mealName = mealName;
         this.calories = calories;
@@ -43,6 +50,9 @@ public class Meal {
         this.fats = fats;
         this.mealType = mealType;
         this.date = date;
+        this.foodId = foodId;
+        this.quantity = quantity;
+        this.unit = unit;
         this.user = user;
     }
 
@@ -116,5 +126,29 @@ public class Meal {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(Long foodId) {
+        this.foodId = foodId;
+    }
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

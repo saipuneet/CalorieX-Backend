@@ -13,6 +13,8 @@ public class AddFoodToMealRequest {
     @Positive(message = "Amount is greater than 0")
     private Double amount;
 
+    private String unit;
+
     @NotNull(message = "Meal type is required")
     private MealType mealType;
 
@@ -42,5 +44,13 @@ public class AddFoodToMealRequest {
 
     public void setMealType(MealType mealType) {
         this.mealType = mealType;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

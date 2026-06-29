@@ -21,6 +21,12 @@ public class MealServiceResponse {
 
     private LocalDate date;
 
+    private Long foodId;
+
+    private Double quantity;
+
+    private String unit;
+
     public MealServiceResponse(){
 
 
@@ -88,5 +94,29 @@ public class MealServiceResponse {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Long getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(Long foodId) {
+        this.foodId = foodId;
+    }
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

@@ -4,70 +4,33 @@ import com.CalorieX.CalorieX_Backend.entity.MealType;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 public class UpdateMealRequest {
 
-    @NotBlank
-    private String mealName;
 
-    @NotNull
-    @Min(0)
-    private Integer calories;
-    @NotNull
-    @Min(0)
-    private Double protein;
-    @NotNull
-    @Min(0)
-    private Double carbs;
-    @NotNull
-    @Min(0)
-    private Double fats;
+
      @NotNull
     private MealType mealType;
+
+     @NotNull
+     @Positive
+     private Double quantity;
+
+
+
+
+
+
+
+
+
 
     public UpdateMealRequest(){
 
     }
 
-    public String getMealName() {
-        return mealName;
-    }
 
-    public void setMealName(String mealName) {
-        this.mealName = mealName;
-    }
-
-    public Integer getCalories() {
-        return calories;
-    }
-
-    public void setCalories(Integer calories) {
-        this.calories = calories;
-    }
-
-    public Double getProtein() {
-        return protein;
-    }
-
-    public void setProtein(Double protein) {
-        this.protein = protein;
-    }
-
-    public Double getCarbs() {
-        return carbs;
-    }
-
-    public void setCarbs(Double carbs) {
-        this.carbs = carbs;
-    }
-
-    public Double getFats() {
-        return fats;
-    }
-
-    public void setFats(Double fats) {
-        this.fats = fats;
-    }
 
     public MealType getMealType() {
         return mealType;
@@ -76,4 +39,19 @@ public class UpdateMealRequest {
     public void setMealType(MealType mealType) {
         this.mealType = mealType;
     }
+
+
+
+
+
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+
 }

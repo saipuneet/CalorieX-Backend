@@ -22,11 +22,17 @@ public class MealResponse {
 
     private LocalDate date;
 
+    private Long foodId;
+
+    private Double quantity;
+
+    private String unit;
+
     public MealResponse(){
 
     }
 
-    public MealResponse(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, MealType mealType, LocalDate date) {
+    public MealResponse(Long id, String mealName, Integer calories, Double protein, Double carbs, Double fats, MealType mealType, LocalDate date, Long foodId, Double quantity, String unit) {
         this.id = id;
         this.mealName = mealName;
         this.calories = calories;
@@ -35,6 +41,9 @@ public class MealResponse {
         this.fats = fats;
         this.mealType = mealType;
         this.date = date;
+        this.foodId = foodId;
+        this.quantity = quantity;
+        this.unit = unit;
     }
 
     public Long getId() {
@@ -99,5 +108,29 @@ public class MealResponse {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Long getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(Long foodId) {
+        this.foodId = foodId;
+    }
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

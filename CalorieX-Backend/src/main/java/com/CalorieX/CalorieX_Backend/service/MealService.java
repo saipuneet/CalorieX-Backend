@@ -30,9 +30,15 @@ public class MealService {
 
     private final MealRepository mealRepository;
 
-    public MealService(UserRepository userRepository, MealRepository mealRepository) {
+    private FoodService foodService;
+
+
+    public MealService(UserRepository userRepository, MealRepository mealRepository,FoodService foodService) {
         this.userRepository = userRepository;
         this.mealRepository = mealRepository;
+        this.foodService = foodService;
+
+        System.out.println("FoodService = " + foodService);
     }
 
     public String addMeal(AddMealRequest addMealRequest) {
@@ -116,6 +122,10 @@ public class MealService {
             mealResponse.setCarbs(meal.getCarbs());
             mealResponse.setMealType(meal.getMealType());
             mealResponse.setDate(meal.getDate());
+
+            mealResponse.setFoodId(meal.getFoodId());
+            mealResponse.setQuantity(meal.getQuantity());
+            mealResponse.setUnit(meal.getUnit());
             mealResponses.add(mealResponse);
         }
 
@@ -196,12 +206,17 @@ public class MealService {
 
         Meal meal = mealRepository.findByIdAndUser(mealId,user).orElseThrow(() -> new MealNotFoundException("Meal not found"));
 
-        meal.setMealName(updateMealRequest.getMealName());
-        meal.setCalories(updateMealRequest.getCalories());
-        meal.setProtein(updateMealRequest.getProtein());
-        meal.setFats(updateMealRequest.getFats());
-        meal.setCarbs(updateMealRequest.getCarbs());
+        FoodDetailsResponse foodDetailsResponse = foodService.getFoodDetails(meal.getFoodId(),updateMealRequest.getQuantity());
+
+        meal.setMealName(foodDetailsResponse.getName());
+        meal.setCalories((int) Math.round(foodDetailsResponse.getCalories()));
+        meal.setProtein(foodDetailsResponse.getProtein());
+        meal.setCarbs(foodDetailsResponse.getCarbs());
+        meal.setFats(foodDetailsResponse.getFat());
         meal.setMealType(updateMealRequest.getMealType());
+
+        meal.setQuantity(updateMealRequest.getQuantity());
+
 
         mealRepository.save(meal);
 

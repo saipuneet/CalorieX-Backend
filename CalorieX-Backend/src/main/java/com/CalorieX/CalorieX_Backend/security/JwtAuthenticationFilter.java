@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // the request coming from the Frontend
         final String authHeader = request.getHeader("Authorization");
+        System.out.println("Auth Header=" + authHeader);
 
         //whether the token is null or it dont start with the standard jwt tojken standard
         if(authHeader == null || !authHeader.startsWith("Bearer ")){

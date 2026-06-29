@@ -37,4 +37,6 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
                                            MealType mealType,
                                            LocalDate date,
                                            Pageable pageable);
+
+   List<Meal> findTop5ByUserOrderByIdDesc(User user);
 }

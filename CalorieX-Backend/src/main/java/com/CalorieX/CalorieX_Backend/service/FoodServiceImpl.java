@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FoodServiceImpl implements FoodService{
@@ -85,13 +86,29 @@ public class FoodServiceImpl implements FoodService{
     @Override
     public FoodDetailsResponse getFoodDetails(Long id,Double amount){
 
+        Optional<Food> foodOptional= foodRepository.findById(id);
+        if(foodOptional.isPresent()){
+            Food food = foodOptional.get();
+            double factor = amount /100.0;
+            FoodDetailsResponse response = new FoodDetailsResponse();
+
+            response.setId(food.getId());
+            response.setName(food.getName());
+            response.setCalories(food.getCalories() * factor);
+            response.setProtein(food.getProtein() * factor);
+            response.setCarbs(food.getCarbs() * factor);
+            response.setFat(food.getFats() * factor);
+            return response;
+        }
+
+
 
 
 
         //Build the url
         String url = "https://api.spoonacular.com/food/ingredients/"
                 + id
-                + "/information?amount=" + amount + "&apiKey="
+                + "/information?amount=" + amount + "&unit=gram&apiKey="
                 + apiKey;
 
 
@@ -117,6 +134,10 @@ public class FoodServiceImpl implements FoodService{
 
 
         for(Nutrient nutrient : ingredientInformationResponse.getNutrition().getNutrients()){
+            System.out.println(
+                    nutrient.getName() + " = " + nutrient.getAmount()
+            );
+
             if("Calories".equals(nutrient.getName())){
                 foodDetailsResponse.setCalories(nutrient.getAmount());
             }
